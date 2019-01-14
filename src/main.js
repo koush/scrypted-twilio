@@ -68,7 +68,7 @@ VirtualDevice.prototype.sendNotification = function (title, body, media, mimeTyp
     // the mediaConvert variable is provided by Scrypted and can be used to convert
     // MediaObjects into other objects.
     // For example, a MediaObject from a RTSP camera can be converted to an externally
-    // accessible Uri using this code.
+    // accessible Uri png image using this code.
     mediaConverter.convert(media, mimeType)
         .to('android.net.Uri', mimeType)
         .setCallback((e, result) => {
@@ -80,7 +80,7 @@ VirtualDevice.prototype.sendNotification = function (title, body, media, mimeTyp
         });
 
     // for example, if you wanted to send the message body as a audio file,
-    /// use this code instead.
+    // use this code instead.
     // under the hood, Android is using the text to speech engine to convert
     // the message body to an audio file, and then hosting the audio file
     // as an externally accessible Uri that Twilio can reach.
