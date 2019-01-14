@@ -11,6 +11,7 @@
       "scrypted-deploy": "^1.1.0"
    },
    "dependencies": {
-      "axios": "^0.18.0"
+      "axios": "^0.18.0",
+      "qs": "^6.6.0"
    }
 }
