@@ -5,7 +5,7 @@ import qs from 'qs';
 const sid = scriptSettings.getString('sid');
 const token = scriptSettings.getString('token');
 const sender = scriptSettings.getString('sender');
-const number = scriptSettings.getString('number');
+const numbers = (scriptSettings.getString('numbers') || '').split(',').map(s => s.trim()).filter(s => s.length);
 
 if (sid == null) {
     throw new Error('No Account SID is configured. Enter a value for "sid" in the Script Settings.');
@@ -19,20 +19,21 @@ if (sender == null) {
     throw new Error('No Twilio phone number is configured. Enter a value for "sender" in the Script Settings.');
 }
 
-if (number == null) {
-    throw new Error('No destination phone number is configured. Enter a value for "number" in the Script Settings.');
+if (!numbers.length) {
+    throw new Error('No destination phone numbers are configured. Use "numbers" in Script Settings to provide a comma separated list of phone numbers.');
 }
 
-function VirtualDevice() {
+function TwilioNumber(number) {
+    this.number = number;
 }
 
 // implementation of Notifier
 
-VirtualDevice.prototype.sendNotification = function (arg0, arg1) {
+TwilioNumber.prototype.sendNotification = function (arg0, arg1) {
     console.log('sendNotification was called!');
 };
 
-VirtualDevice.prototype.postTwilio = function (body) {
+TwilioNumber.prototype.postTwilio = function (body) {
     return axios.post(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
         qs.stringify(body),
         {
@@ -52,13 +53,13 @@ VirtualDevice.prototype.postTwilio = function (body) {
         });
 }
 
-VirtualDevice.prototype.sendNotification = function (title, body, media, mimeType) {
+TwilioNumber.prototype.sendNotification = function (title, body, media, mimeType) {
     console.log('sendNotification (media) was called!');
 
     const postBody = {
         From: sender,
         Body: body,
-        To: number,
+        To: this.number,
     };
 
     if (!media) {
@@ -96,6 +97,25 @@ VirtualDevice.prototype.sendNotification = function (title, body, media, mimeTyp
     //     });
 };
 
+function Twilio() {
+    setImmediate(() => {
+        var devices = numbers.map(number => ({
+            name: number,
+            id: number,
+            type: 'Notifier',
+            interfaces: ['Notifier'],
+        }));
 
-exports.result = new VirtualDevice();
+        deviceManager.onDevicesChanged({
+            devices,
+        });
+    });
+}
 
+Twilio.prototype.getDevice = function (id) {
+    if (numbers.indexOf(id) == -1)
+        return null;
+    return new TwilioNumber(id);
+}
+
+export default new Twilio();
