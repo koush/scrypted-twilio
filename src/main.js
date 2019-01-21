@@ -7,21 +7,30 @@ const token = scriptSettings.getString('token');
 const sender = scriptSettings.getString('sender');
 const numbers = (scriptSettings.getString('numbers') || '').split(',').map(s => s.trim()).filter(s => s.length);
 
-if (sid == null) {
-    throw new Error('No Account SID is configured. Enter a value for "sid" in the Script Settings.');
+function alertAndThrow(msg) {
+    log.a(msg);
+    throw new Error(msg);
 }
+
+if (sid == null) {
+    alertAndThrow('No Account SID is configured. Enter a value for "sid" in the Script Settings.');
+}
+log.clearAlerts();
 
 if (token == null) {
-    throw new Error('No Auth Token is configured. Enter a value for "token" in the Script Settings.');
+    alertAndThrow('No Auth Token is configured. Enter a value for "token" in the Script Settings.');
 }
+log.clearAlerts();
 
 if (sender == null) {
-    throw new Error('No Twilio phone number is configured. Enter a value for "sender" in the Script Settings.');
+    alertAndThrow('No Twilio phone number is configured. Enter a value for "sender" in the Script Settings.');
 }
+log.clearAlerts();
 
 if (!numbers.length) {
-    throw new Error('No destination phone numbers are configured. Use "numbers" in Script Settings to provide a comma separated list of phone numbers.');
+    alertAndThrow('No destination phone numbers are configured. Use "numbers" in Script Settings to provide a comma separated list of phone numbers.');
 }
+log.clearAlerts();
 
 function TwilioNumber(number) {
     this.number = number;
