@@ -12,17 +12,17 @@ function alertAndThrow(msg) {
     throw new Error(msg);
 }
 
-if (sid == null) {
+if (!sid || !sid.length) {
     alertAndThrow('No Account SID is configured. Enter a value for "sid" in the Script Settings.');
 }
 log.clearAlerts();
 
-if (token == null) {
+if (!token || !token.length) {
     alertAndThrow('No Auth Token is configured. Enter a value for "token" in the Script Settings.');
 }
 log.clearAlerts();
 
-if (sender == null) {
+if (!sender || !sender.length) {
     alertAndThrow('No Twilio phone number is configured. Enter a value for "sender" in the Script Settings.');
 }
 log.clearAlerts();
