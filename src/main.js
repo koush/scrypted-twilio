@@ -1,6 +1,7 @@
-import "core-js/modules/es6.promise";
 import axios from 'axios';
 import qs from 'qs';
+import sdk from '@scrypted/sdk';
+const { deviceManager, log, mediaManager } = sdk;
 
 const sid = scriptSettings.getString('sid');
 const token = scriptSettings.getString('token');
@@ -12,25 +13,23 @@ function alertAndThrow(msg) {
     throw new Error(msg);
 }
 
+log.clearAlerts();
+
 if (!sid || !sid.length) {
     alertAndThrow('No Account SID is configured. Enter a value for "sid" in the Script Settings.');
 }
-log.clearAlerts();
 
 if (!token || !token.length) {
     alertAndThrow('No Auth Token is configured. Enter a value for "token" in the Script Settings.');
 }
-log.clearAlerts();
 
 if (!sender || !sender.length) {
     alertAndThrow('No Twilio phone number is configured. Enter a value for "sender" in the Script Settings.');
 }
-log.clearAlerts();
 
 if (!numbers.length) {
     alertAndThrow('No destination phone numbers are configured. Use "numbers" in Script Settings to provide a comma separated list of phone numbers.');
 }
-log.clearAlerts();
 
 function TwilioNumber(number) {
     this.number = number;
@@ -79,15 +78,11 @@ TwilioNumber.prototype.sendNotification = function (title, body, media, mimeType
     // MediaObjects into other objects.
     // For example, a MediaObject from a RTSP camera can be converted to an externally
     // accessible Uri png image using this code.
-    mediaConverter.convert(media, mimeType)
-        .to('android.net.Uri', mimeType)
-        .setCallback((e, result) => {
-            if (result) {
-                postBody['MediaUrl'] = result.toString();
-            }
-
-            this.postTwilio(postBody);
-        });
+    mediaManager.convertMediaObjectToUri(media, mimeType)
+    .then(result => {
+        postBody['MediaUrl'] = result.toString();
+        this.postTwilio(postBody);
+    });
 
     // for example, if you wanted to send the message body as a audio file,
     // use this code instead.
@@ -95,22 +90,18 @@ TwilioNumber.prototype.sendNotification = function (title, body, media, mimeType
     // the message body to an audio file, and then hosting the audio file
     // as an externally accessible Uri that Twilio can reach.
 
-    // mediaConverter.convert(body, 'text/string')
-    //     .to('android.net.Uri', 'audio/*')
-    //     .setCallback((e, result) => {
-    //         if (result) {
-    //             postBody['MediaUrl'] = result.toString();
-    //         }
-
-    //         this.postTwilio(postBody);
-    //     });
+    // mediaManager.convertMediaObjectToUri(body, 'text/string')
+    // .then(result => {
+    //     postBody['MediaUrl'] = result.toString();
+    //     this.postTwilio(postBody);
+    // });
 };
 
 function Twilio() {
     setImmediate(() => {
         var devices = numbers.map(number => ({
             name: number,
-            id: number,
+            nativeId: number,
             type: 'Notifier',
             interfaces: ['Notifier'],
         }));

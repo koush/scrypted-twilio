@@ -1,6 +1,6 @@
 {
    "name": "@scrypted/twilio",
-   "version": "0.0.6",
+   "version": "0.0.7",
    "description": "Notify phone numbers using Twilio",
    "author": "Scrypted",
    "license": "Apache",
@@ -21,10 +21,12 @@
    "scrypted": {
       "name": "Twilio Notifier",
       "type": "Device",
-      "interfaces": ["DeviceProvider"]
+      "interfaces": [
+         "DeviceProvider"
+      ]
    },
    "devDependencies": {
-      "scrypted-deploy": "^1.2.3"
+      "@scrypted/sdk": "0.0.16"
    },
    "dependencies": {
       "axios": "^0.18.0",
