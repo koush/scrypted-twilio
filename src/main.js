@@ -3,10 +3,10 @@ import qs from 'qs';
 import sdk from '@scrypted/sdk';
 const { deviceManager, log, mediaManager } = sdk;
 
-const sid = scriptSettings.getString('sid');
-const token = scriptSettings.getString('token');
-const sender = scriptSettings.getString('sender');
-const numbers = (scriptSettings.getString('numbers') || '').split(',').map(s => s.trim()).filter(s => s.length);
+const sid = localStorage.getItem('sid');
+const token = localStorage.getItem('token');
+const sender = localStorage.getItem('sender');
+const numbers = (localStorage.getItem('numbers') || '').split(',').map(s => s.trim()).filter(s => s.length);
 
 function alertAndThrow(msg) {
     log.a(msg);

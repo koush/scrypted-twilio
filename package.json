@@ -1,6 +1,6 @@
 {
    "name": "@scrypted/twilio",
-   "version": "0.0.7",
+   "version": "0.0.8",
    "description": "Notify phone numbers using Twilio",
    "author": "Scrypted",
    "license": "Apache",
@@ -26,7 +26,7 @@
       ]
    },
    "devDependencies": {
-      "@scrypted/sdk": "0.0.16"
+      "@scrypted/sdk": "0.0.26"
    },
    "dependencies": {
       "axios": "^0.18.0",
