@@ -1,6 +1,6 @@
 {
    "name": "@scrypted/twilio",
-   "version": "0.0.9",
+   "version": "0.0.10",
    "description": "Notify phone numbers using Twilio",
    "author": "Scrypted",
    "license": "Apache",
